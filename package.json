@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/andwin/google-spreadsheet-report/issues"
   },
-  "homepage": "https://github.com/andwin/google-spreadsheet-report#readme"
+  "homepage": "https://github.com/andwin/google-spreadsheet-report#readme",
+  "dependencies": {
+    "dayjs": "^1.8.14",
+    "googleapis": "^40.0.0"
+  }
 }
