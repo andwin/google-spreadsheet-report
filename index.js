@@ -17,7 +17,7 @@ const appendData = async (data, options) => {
   const version = 'v4'
   const sheets = google.sheets({ version, auth })
 
-  console.log(sheets)
+  await appendDataToSheet(sheets, data, options)
 }
 
 const authorize = (options) => {
@@ -35,6 +35,31 @@ const authorize = (options) => {
       resolve(authClient)
     })
   }))
+}
+
+const appendDataToSheet = (sheets, data, options) => {
+  const { spreadsheetId } = options
+  return new Promise((resolve, reject) => {
+    const appendRequest = {
+      spreadsheetId,
+      range: 'A1',
+      valueInputOption: 'RAW',
+      resource: {
+        values: [
+          Object.values(data),
+        ],
+      },
+
+    }
+    sheets.spreadsheets.values.append(appendRequest, (appendErr, appendRes) => {
+      if (appendErr) return reject(appendErr)
+
+      // TODO: Change code below to process the `appendRes` object:
+      console.log(JSON.stringify(appendRes, null, 2))
+
+      resolve()
+    })
+  })
 }
 
 module.exports = {
