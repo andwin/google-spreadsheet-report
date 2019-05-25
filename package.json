@@ -1,5 +1,5 @@
 {
-  "name": "y",
+  "name": "google-spreadsheet-report",
   "version": "0.0.1",
   "description": "A simple way to create a report in google spreadsheet",
   "main": "index.js",
