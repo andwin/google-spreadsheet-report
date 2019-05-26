@@ -5,6 +5,7 @@ const { google } = require('googleapis')
 options
   email
   key
+  worksheet
 */
 const appendData = async (data, options) => {
   // Validate options
@@ -38,11 +39,11 @@ const authorize = (options) => {
 }
 
 const appendDataToSheet = (sheets, data, options) => {
-  const { spreadsheetId } = options
+  const { spreadsheetId, worksheet } = options
   return new Promise((resolve, reject) => {
     const appendRequest = {
       spreadsheetId,
-      range: 'A1',
+      range: `${worksheet}!A1`,
       valueInputOption: 'RAW',
       resource: {
         values: [
