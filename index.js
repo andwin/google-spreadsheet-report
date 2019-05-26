@@ -18,6 +18,8 @@ const appendData = async (data, options) => {
   const version = 'v4'
   const sheets = google.sheets({ version, auth })
 
+  await makeSureSheetExists(sheets, options)
+
   await appendDataToSheet(sheets, data, options)
 }
 
@@ -36,6 +38,44 @@ const authorize = (options) => {
       resolve(authClient)
     })
   }))
+}
+
+const makeSureSheetExists = (sheets, options) => {
+  const { spreadsheetId } = options
+
+  return new Promise((resolve, reject) => {
+    sheets.spreadsheets.get({ spreadsheetId }, (getErr, res) => {
+      if (getErr) return reject(getErr)
+
+      const found = res.data.sheets.some(s => s.properties.title === options.worksheet)
+
+      console.log({ found })
+
+      if (found) return resolve()
+
+      if (!found) {
+        const resource = {
+          requests: [
+            {
+              addSheet: {
+                properties: {
+                  title: options.worksheet,
+                },
+              },
+            },
+          ],
+        }
+        sheets.spreadsheets.batchUpdate({
+          spreadsheetId,
+          resource,
+        }, (addErr) => {
+          if (addErr) return reject(addErr)
+
+          resolve()
+        })
+      }
+    })
+  })
 }
 
 const appendDataToSheet = (sheets, data, options) => {
