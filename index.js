@@ -93,8 +93,8 @@ const makeSureHeadersExist = (sheets, data, options) => {
 
     sheets.spreadsheets.values.get(request, (getErr, getRes) => {
       if (getErr) return reject(getErr)
-      // if (!getRes.data.values) return resolve()
-      const [sheetHeaders] = getRes.data.values
+
+      const [sheetHeaders] = getRes.data.values || [[]]
 
       const missingHeaders = headers.filter(h => !sheetHeaders.includes(h))
 
