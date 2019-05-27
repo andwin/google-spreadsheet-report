@@ -81,7 +81,8 @@ const makeSureSheetExists = (sheets, options) => {
 }
 
 const makeSureHeadersExist = (sheets, data, options) => {
-  const headers = Object.keys(data).filter(h => h !== 'undefined')
+  const headers = Object.keys(data).filter(h => h !== 'undefined' && h !== 'date')
+  headers.unshift('date')
   const { spreadsheetId, worksheet } = options
   // const numberOfColumnsToCheck = 100 // todo: implement this - convert to range
 
