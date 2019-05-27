@@ -20,6 +20,8 @@ const appendData = async (data, options) => {
 
   await makeSureSheetExists(sheets, options)
 
+  await makeSureHeadersExist(sheets, data, options)
+
   await appendDataToSheet(sheets, data, options)
 }
 
@@ -74,6 +76,55 @@ const makeSureSheetExists = (sheets, options) => {
           resolve()
         })
       }
+    })
+  })
+}
+
+const makeSureHeadersExist = (sheets, data, options) => {
+  const headers = Object.keys(data)
+  const { spreadsheetId, worksheet } = options
+  // const numberOfColumnsToCheck = 100 // todo: implement this - convert to range
+
+  return new Promise((resolve, reject) => {
+    const request = {
+      spreadsheetId,
+      range: `${worksheet}!A1:Z1`,
+    }
+
+    sheets.spreadsheets.values.get(request, (getErr, getRes) => {
+      if (getErr) return reject(getErr)
+      // if (!getRes.data.values) return resolve()
+      const [sheetHeaders] = getRes.data.values
+
+      const missingHeaders = headers.filter(h => !sheetHeaders.includes(h))
+
+      console.log({ sheetHeaders })
+      console.log({ headers })
+      console.log({ missingHeaders })
+
+      if (!missingHeaders.length) return resolve()
+
+      // TODO: Calculate next free column
+
+      const appendRequest = {
+        spreadsheetId,
+        range: `${worksheet}!F1`,
+        valueInputOption: 'RAW',
+        resource: {
+          values: [
+            missingHeaders,
+          ],
+        },
+
+      }
+      sheets.spreadsheets.values.append(appendRequest, (appendErr, appendRes) => {
+        if (appendErr) return reject(appendErr)
+
+        // TODO: Change code below to process the `appendRes` object:
+        console.log(JSON.stringify(appendRes, null, 2))
+
+        resolve()
+      })
     })
   })
 }
