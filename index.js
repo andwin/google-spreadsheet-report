@@ -30,7 +30,7 @@ const authorize = (options) => {
     options.email,
     null,
     options.key,
-    [options.baseUrl]
+    [options.baseUrl],
   )
 
   return new Promise(((resolve, reject) => {
