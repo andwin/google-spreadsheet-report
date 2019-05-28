@@ -1,5 +1,6 @@
 const dayjs = require('dayjs')
 const { google } = require('googleapis')
+const columnNumberToName = require('./utils/columnNumberToName')
 
 /*
 options
@@ -84,12 +85,13 @@ const makeSureHeadersExist = (sheets, data, options) => {
   const headers = Object.keys(data).filter(h => h !== 'undefined' && h !== 'date')
   headers.unshift('date')
   const { spreadsheetId, worksheet } = options
-  // const numberOfColumnsToCheck = 100 // todo: implement this - convert to range
+  const numberOfColumnsToCheck = 100 // todo: implement this - convert to range
 
   return new Promise((resolve, reject) => {
+    const rangeLimit = columnNumberToName(numberOfColumnsToCheck)
     const request = {
       spreadsheetId,
-      range: `${worksheet}!A1:Z1`,
+      range: `${worksheet}!A1:${rangeLimit}1`,
     }
 
     sheets.spreadsheets.values.get(request, (getErr, getRes) => {
