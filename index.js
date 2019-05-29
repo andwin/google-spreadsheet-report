@@ -107,11 +107,15 @@ const makeSureHeadersExist = (sheets, data, options) => {
 
       if (!missingHeaders.length) return resolve()
 
-      // TODO: Calculate next free column
+      const firstFreeColumnNumber = sheetHeaders.length + 1
+      const firstFreeColumnName = columnNumberToName(firstFreeColumnNumber)
+
+      console.log({firstFreeColumnNumber})
+      console.log({firstFreeColumnName})
 
       const appendRequest = {
         spreadsheetId,
-        range: `${worksheet}!F1`,
+        range: `${worksheet}!${firstFreeColumnName}1`,
         valueInputOption: 'RAW',
         resource: {
           values: [
