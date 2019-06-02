@@ -101,17 +101,10 @@ const makeSureHeadersExist = (sheets, data, options) => {
 
       const missingHeaders = headers.filter(h => !sheetHeaders.includes(h))
 
-      console.log({ sheetHeaders })
-      console.log({ headers })
-      console.log({ missingHeaders })
-
       if (!missingHeaders.length) return resolve()
 
       const firstFreeColumnNumber = sheetHeaders.length + 1
       const firstFreeColumnName = columnNumberToName(firstFreeColumnNumber)
-
-      console.log({firstFreeColumnNumber})
-      console.log({firstFreeColumnName})
 
       const appendRequest = {
         spreadsheetId,
@@ -126,9 +119,6 @@ const makeSureHeadersExist = (sheets, data, options) => {
       }
       sheets.spreadsheets.values.append(appendRequest, (appendErr, appendRes) => {
         if (appendErr) return reject(appendErr)
-
-        // TODO: Change code below to process the `appendRes` object:
-        console.log(JSON.stringify(appendRes, null, 2))
 
         resolve()
       })
