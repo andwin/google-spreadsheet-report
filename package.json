@@ -1,6 +1,6 @@
 {
   "name": "google-spreadsheet-report",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A simple way to create a report in google spreadsheet",
   "main": "lib/index.js",
   "scripts": {
