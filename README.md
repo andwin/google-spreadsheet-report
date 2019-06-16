@@ -36,3 +36,11 @@ const run = async () => {
 
 run()
 ```
+
+This would produce a spreadsheet looking something like this:
+
+date | val1 | val2
+-----|------|-----
+2019-06-02 | 34 | 759
+
+The worksheet is created if it doesn't exist. Any missing column headers are also added.
