@@ -7,7 +7,7 @@ A simple library to append data to a google spreadsheet.
 npm install google-spreadsheet-report --save
 ```
 
-```
+```javascript
 const dayjs = require('dayjs')
 const gsr = require('../google-spreadsheet-report')
 
