@@ -44,3 +44,13 @@ date | val1 | val2
 2019-06-02 | 34 | 759
 
 The worksheet is created if it doesn't exist. Any missing column headers are also added.
+
+## Generating credentials
+1. Log in to the [Google Developer Console](https://console.developers.google.com/)
+2. Create a project new project och select an existing one
+3. Open "Library" tab and enable the "Google Drive API"
+4. Go back to the [Google Developer Console](https://console.developers.google.com/) and open the "Credentials" tab
+5. Create a "Service account key"
+6. Copy the service account id (Someting like "test-579@rock-arc-1124354.iam.gserviceaccount.com")
+7. Select "P12" and click "Create" and then "Create without role"
+8. the p12-file should now be downloaded to your computer
