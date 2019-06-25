@@ -53,4 +53,9 @@ The worksheet is created if it doesn't exist. Any missing column headers are als
 5. Create a "Service account key"
 6. Copy the service account id (Someting like "test-579@rock-arc-1124354.iam.gserviceaccount.com")
 7. Select "P12" and click "Create" and then "Create without role"
-8. the p12-file should now be downloaded to your computer
+8. The p12-file should now be downloaded to your computer
+9. Convert the p12 file into pem format\
+  `openssl pkcs12 -in <filename.p12> -nodes -nocerts > key.pem`\
+  when prompted for password, enter `notasecret`
+ 
+  
