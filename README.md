@@ -12,12 +12,12 @@ const dayjs = require('dayjs')
 const gsr = require('../google-spreadsheet-report')
 
 const options = {
-  email: '???@????.iam.gserviceaccount.com',
+  email: 'test-579@rock-arc-1124354.iam.gserviceaccount.com',
   key: `-----BEGIN PRIVATE KEY-----
 Private key here
 -----END PRIVATE KEY-----`,
   spreadsheetId: '<spreadsheetId>',
-  worksheet: '<name of workshet>',
+  worksheet: '<name of workshet>', // Optional
 }
 
 const data = {
@@ -57,5 +57,17 @@ The worksheet is created if it doesn't exist. Any missing column headers are als
 9. Convert the p12 file into pem format\
   `openssl pkcs12 -in <filename.p12> -nodes -nocerts > key.pem`\
   when prompted for password, enter `notasecret`
- 
-  
+10. Create a new spreadsheet and share it (using the *Share* button) with the service email from step 6
+11. Get the spreadsheet id from the url. For example if the url is\
+  `https://docs.google.com/spreadsheets/d/1IeEaLOGLuIcy5oPN-OZlxzYwPYRuzVnlrpDlqkzWtOk/edit#gid=0`\
+  the id is `1IeEaLOGLuIcy5oPN-OZlxzYwPYRuzVnlrpDlqkzWtOk`
+12. Now you have everything you need. Create the options object wiht the email, key and spreadsheet id 
+```
+const options = {
+  email: 'test-579@rock-arc-1124354.iam.gserviceaccount.com',
+  key: `-----BEGIN PRIVATE KEY-----
+MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDDVa....
+-----END PRIVATE KEY-----`,
+  spreadsheetId: '1IeEaLOGLuIcy5oPN-OZlxzYwPYRuzVnlrpDlqkzWtOk',
+}
+```
