@@ -45,14 +45,15 @@ date | val1 | val2
 
 The worksheet is created if it doesn't exist. Any missing column headers are also added.
 
-If you later run
-
+If you later run:
 ```
 const data = {
   date: dayjs().format('YYYY-MM-DD'),
   val2: Math.floor(Math.random() * 1000),
   val3: Math.floor(Math.random() * 100),
 }
+
+await gsr.appendData(data, options)
 ```
 
 Your spreadsheet would look like this:
