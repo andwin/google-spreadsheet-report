@@ -45,6 +45,24 @@ date | val1 | val2
 
 The worksheet is created if it doesn't exist. Any missing column headers are also added.
 
+If you later run
+
+```
+const data = {
+  date: dayjs().format('YYYY-MM-DD'),
+  val2: Math.floor(Math.random() * 1000),
+  val3: Math.floor(Math.random() * 100),
+}
+```
+
+Your spreadsheet would look like this:
+
+date | val1 | val2 | val3
+-----|------|-----|-----
+2019-06-02 | 34 | 759 | 
+2019-06-03 | | 485 | 63
+
+
 ## Generating credentials
 1. Log in to the [Google Developer Console](https://console.developers.google.com/)
 2. Create a project new project och select an existing one
