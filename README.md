@@ -43,6 +43,24 @@ date | val1 | val2
 -----|------|-----
 2019-06-02 | 34 | 759
 
+If you later add an extra attribute like this
+
+```
+const data = {
+  date: dayjs().format('YYYY-MM-DD'),
+  val1: Math.floor(Math.random() * 50),
+  val2: Math.floor(Math.random() * 1000),
+  val3: Math.floor(Math.random() * 1000),
+}
+```
+
+a new column would be added to the spreadsheet:
+
+date | val1 | val2 | val3
+-----|------|-----|-----
+2019-06-02 | 34 | 759 |
+2019-06-03 | 12 | 846 | 594
+
 The worksheet is created if it doesn't exist. Any missing column headers are also added.
 
 If you later run:
@@ -80,7 +98,7 @@ date | val1 | val2 | val3
 11. Get the spreadsheet id from the url. For example if the url is\
   `https://docs.google.com/spreadsheets/d/1IeEaLOGLuIcy5oPN-OZlxzYwPYRuzVnlrpDlqkzWtOk/edit#gid=0`\
   the id is `1IeEaLOGLuIcy5oPN-OZlxzYwPYRuzVnlrpDlqkzWtOk`
-12. Now you have everything you need. Create the options object wiht the email, key and spreadsheet id 
+12. Now you have everything you need. Create the options object wiht the email, key and spreadsheet id
 ```
 const options = {
   email: 'test-579@rock-arc-1124354.iam.gserviceaccount.com',
