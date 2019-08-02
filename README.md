@@ -18,6 +18,7 @@ Private key here
 -----END PRIVATE KEY-----`,
   spreadsheetId: '<spreadsheetId>',
   worksheet: '<name of workshet>', // Optional
+  retention: 14, // Retention in days. Defaults to 14.
 }
 
 const data = {
@@ -64,6 +65,9 @@ date | val1 | val2 | val3
 2019-06-03 | 12 | 846 | 594
 
 The worksheet is created if it doesn't exist. Any missing column headers are also added.
+
+## Automatic purging of old data
+To keep the document from getting too big, rows with dates older than the retention limit will be purged on each update.
 
 ## Generating credentials
 1. Log in to the [Google Developer Console](https://console.developers.google.com/)
