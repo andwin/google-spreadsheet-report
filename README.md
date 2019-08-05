@@ -29,6 +29,7 @@ const data = {
 
 const run = async () => {
   try {
+    await gst.appendData()
     await gsr.appendData(data, options)
   } catch (e) {
     console.error(e)
