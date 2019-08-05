@@ -17,7 +17,7 @@ const options = {
 Private key here
 -----END PRIVATE KEY-----`,
   spreadsheetId: '<spreadsheetId>',
-  worksheet: '<name of workshet>', // Optional
+  sheet: '<name of sheet>', // Optional. Defaults to the first sheet.
   retention: 14, // Retention in days. Defaults to 14.
 }
 
