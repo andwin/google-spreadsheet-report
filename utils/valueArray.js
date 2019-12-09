@@ -1,5 +1,5 @@
 const valueArray = (data, headers) => {
-  const values = headers.map(h => data[h])
+  const values = headers.map((h) => data[h])
 
   return values
 }
