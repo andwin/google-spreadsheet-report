@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/andwin/google-spreadsheet-report#readme",
   "dependencies": {
-    "dayjs": "^1.8.15",
+    "dayjs": "^1.8.17",
     "googleapis": "^41.0.1"
   },
   "devDependencies": {
