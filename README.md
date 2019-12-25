@@ -1,11 +1,12 @@
 # google-spreadsheet-report
 A simple library to append data to a google spreadsheet.
 
-## Quickstart
+```
+npm install google-spreadsheet-report
+```
 
-```
-npm install google-spreadsheet-report --save
-```
+## Logging data to spreadsheet
+The `appendData` function appends data to the bottom of a google spreadsheet. Like a log. To keep the document from getting too big, rows with dates older than the retention limit will be purged on each update.
 
 ```javascript
 const dayjs = require('dayjs')
@@ -66,8 +67,48 @@ date | val1 | val2 | val3
 
 The worksheet is created if it doesn't exist. Any missing column headers are also added.
 
-## Automatic purging of old data
-To keep the document from getting too big, rows with dates older than the retention limit will be purged on each update.
+## Updating key values
+The `setKeyValues` finds the row with a matching key and updates all the values on that row. The row is created if it doesn´t exist
+
+```javascript
+const dayjs = require('dayjs')
+const gsr = require('../google-spreadsheet-report')
+
+const options = {
+  email: 'test-579@rock-arc-1124354.iam.gserviceaccount.com',
+  key: `-----BEGIN PRIVATE KEY-----
+Private key here
+-----END PRIVATE KEY-----`,
+  spreadsheetId: '<spreadsheetId>',
+  sheet: '<name of sheet>', // Optional. Defaults to the first sheet.
+  keyName: 'job', // Name of the column to update. Defaults to "name".
+}
+
+const data = {
+  job: 'Nightly report',
+  'last run': dayjs().format('YYYY-MM-DD HH:mm'),
+  status: 'OK',
+  error: ''
+}
+
+const run = async () => {
+  try {
+    await gsr.setKeyValues(data, options)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+run()
+```
+
+This would output the following data.
+
+job | last run | status | error
+-----|------|-----|-----
+Nightly report | 2019-12-22 21:44 | OK |
+
+If you run the same code again, only the value of `last run` on that same line would be updated.
 
 ## Generating credentials
 1. Log in to the [Google Developer Console](https://console.developers.google.com/)
