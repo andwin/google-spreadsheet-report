@@ -1,7 +1,3 @@
-const valueArray = (data, headers) => {
-  const values = headers.map((h) => data[h])
-
-  return values
-}
+const valueArray = (data, headers) => headers.map((h) => data[h])
 
 module.exports = valueArray
