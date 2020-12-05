@@ -1,12 +1,3 @@
 {
-  "extends": "airbnb-base",
-  "env": {
-    "jest": true
-  },
-  "rules": {
-    "semi": ["error", "never"],
-    "no-use-before-define": ["error", { "variables": false }],
-    "no-param-reassign": "off",
-    "consistent-return": "off"
-  }
+  "extends": "@andwin/eslint-config"
 }
