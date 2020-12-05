@@ -22,13 +22,11 @@
   },
   "homepage": "https://github.com/andwin/google-spreadsheet-report#readme",
   "dependencies": {
+    "@andwin/eslint-config": "0.0.6",
     "dayjs": "^1.8.23",
     "googleapis": "^48.0.0"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.1",
     "jest": "^25.1.0"
   }
 }
