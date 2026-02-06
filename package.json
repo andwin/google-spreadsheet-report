@@ -4,7 +4,7 @@
   "description": "A simple way to create a report in google spreadsheet",
   "main": "lib/index.js",
   "scripts": {
-    "test": "eslint . && jest"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,6 @@
     "googleapis": "^171.4.0"
   },
   "devDependencies": {
-    "@andwin/eslint-config": "^0.0.9",
     "jest": "^27.0.6"
   }
 }
