@@ -4,7 +4,7 @@
   "description": "A simple way to create a report in google spreadsheet",
   "main": "lib/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "biome check . && jest"
   },
   "repository": {
     "type": "git",
