@@ -1,24 +1,35 @@
-const dayjs = require('dayjs')
-const columnNumberToName = require('./column_number_to_name')
-const valueArray = require('./value_array')
-const validateOptions = require('./validate_options')
-const spreadsheets = require('./spreadsheet_api')
+import dayjs from 'dayjs'
+import type { sheets_v4 } from 'googleapis'
+import columnNumberToName from './column_number_to_name'
+import * as spreadsheets from './spreadsheet_api'
+import validateOptions, { type SpreadsheetOptions } from './validate_options'
+import valueArray, { type DataRecord } from './value_array'
 
-const spreadsheetApiVersion = 'v4'
+// Re-export types for consumers
+export type { SpreadsheetOptions, DataRecord }
 
-/**
- * @description
- * Append data to the spreadsheet.
- *
- * @param {Object} data Object containing the values to be added
- * @param {Object} options
- * @param {String} options.email Email of the account with access to the spreadsheet
- * @param {String} options.key Key to access the spreadsheet
- * @param {String} options.spreadsheetId Id of the spreadsheet
- * @param {String} [options.sheet] Name of the sheet. Defaults to the first sheet.
- * @param {Number} [options.retention] Retention in days. Defaults to 14.
- */
-const appendData = async (data, options) => {
+type SheetsClient = sheets_v4.Sheets
+
+const spreadsheetApiVersion = 'v4' as const
+
+export type AppendDataOptions = SpreadsheetOptions & {
+  sheet?: string
+  retention?: number
+}
+
+export type SetKeyValuesOptions = SpreadsheetOptions & {
+  sheet?: string
+  keyName?: string
+}
+
+export type DataWithDate = DataRecord & {
+  date?: string
+}
+
+export const appendData = async (
+  data: DataWithDate,
+  options: AppendDataOptions,
+): Promise<void> => {
   validateOptions(options)
 
   // set defaults
@@ -45,7 +56,10 @@ const appendData = async (data, options) => {
   await purgeRows(sheets, sheetId, options)
 }
 
-const setKeyValues = async (data, options) => {
+export const setKeyValues = async (
+  data: DataRecord,
+  options: SetKeyValuesOptions,
+): Promise<void> => {
   validateOptions(options)
 
   // set defaults
@@ -66,15 +80,16 @@ const setKeyValues = async (data, options) => {
   }
 }
 
-const makeSureSheetExists = async (sheets, options) => {
+const makeSureSheetExists = async (
+  sheets: SheetsClient,
+  options: SpreadsheetOptions,
+): Promise<number> => {
   const { spreadsheetId } = options
   if (!options.sheet) return 0
 
   const res = await spreadsheets.get(sheets, { spreadsheetId })
-  const found = res.data.sheets.find(
-    (s) => s.properties.title === options.sheet,
-  )
-  if (found) return found.properties.sheetId
+  const found = res.sheets?.find((s) => s.properties?.title === options.sheet)
+  if (found) return found.properties?.sheetId ?? 0
 
   const request = {
     spreadsheetId,
@@ -91,11 +106,15 @@ const makeSureSheetExists = async (sheets, options) => {
     },
   }
   const sheet = await spreadsheets.batchUpdate(sheets, request)
-  const [reply] = sheet.data.replies
-  return reply.addSheet.properties.sheetId
+  const reply = sheet.replies?.[0]
+  return reply?.addSheet?.properties?.sheetId ?? 0
 }
 
-const makeSureHeadersExist = async (sheets, dataHeaders, options) => {
+const makeSureHeadersExist = async (
+  sheets: SheetsClient,
+  dataHeaders: string[],
+  options: SpreadsheetOptions,
+): Promise<string[]> => {
   const { spreadsheetId, sheet } = options
   const numberOfColumnsToCheck = 100
 
@@ -107,7 +126,7 @@ const makeSureHeadersExist = async (sheets, dataHeaders, options) => {
 
   const getRes = await spreadsheets.valuesGet(sheets, request)
 
-  const [sheetHeaders] = getRes.data.values || [[]]
+  const sheetHeaders = (getRes.values?.[0] as string[]) || []
   const missingHeaders = dataHeaders.filter((h) => !sheetHeaders.includes(h))
   if (!missingHeaders.length) return sheetHeaders
 
@@ -127,7 +146,12 @@ const makeSureHeadersExist = async (sheets, dataHeaders, options) => {
   return sheetHeaders.concat(missingHeaders)
 }
 
-const appendDataToSheet = async (sheets, data, headers, options) => {
+const appendDataToSheet = async (
+  sheets: SheetsClient,
+  data: DataRecord,
+  headers: string[],
+  options: SpreadsheetOptions,
+): Promise<void> => {
   const { spreadsheetId, sheet } = options
   const values = valueArray(data, headers)
   const appendRequest = {
@@ -139,10 +163,14 @@ const appendDataToSheet = async (sheets, data, headers, options) => {
     },
   }
 
-  return spreadsheets.valuesAppend(sheets, appendRequest)
+  await spreadsheets.valuesAppend(sheets, appendRequest)
 }
 
-const purgeRows = async (sheets, sheetId, options) => {
+const purgeRows = async (
+  sheets: SheetsClient,
+  sheetId: number,
+  options: AppendDataOptions,
+): Promise<void> => {
   const { spreadsheetId, sheet } = options
   const numberOfRowsToCheck = 1000
 
@@ -152,16 +180,16 @@ const purgeRows = async (sheets, sheetId, options) => {
   }
 
   const getRes = await spreadsheets.valuesGet(sheets, request)
-  if (!getRes.data.values) return
+  if (!getRes.values) return
 
-  const limit = dayjs().subtract(options.retention, 'days')
-  const deleteRequests = []
-  getRes.data.values.forEach((values, i) => {
-    const [value] = values
+  const limit = dayjs().subtract(options.retention ?? 14, 'days')
+  const deleteRequests: sheets_v4.Schema$Request[] = []
+  getRes.values.forEach((values, i) => {
+    const [value] = values as string[]
     const date = dayjs(value)
 
     if (!value || !date.isValid() || date.isBefore(limit)) {
-      const deleteRequest = {
+      const deleteRequest: sheets_v4.Schema$Request = {
         deleteDimension: {
           range: {
             sheetId,
@@ -185,17 +213,23 @@ const purgeRows = async (sheets, sheetId, options) => {
     spreadsheetId,
     resource,
   }
-  return spreadsheets.batchUpdate(sheets, updateRequest)
+  await spreadsheets.batchUpdate(sheets, updateRequest)
 }
 
-const updateRowIfExists = async (sheets, data, sheetHeaders, options) => {
+const updateRowIfExists = async (
+  sheets: SheetsClient,
+  data: DataRecord,
+  sheetHeaders: string[],
+  options: SetKeyValuesOptions,
+): Promise<boolean> => {
   const { spreadsheetId, sheet } = options
   const numberOfRowsToCheck = 1000
-  const key = data[options.keyName]
+  const keyName = options.keyName ?? 'key'
+  const key = data[keyName]
 
   if (!key) {
     throw new Error(
-      `Key is not specified. Set a value for "${options.keyName}" or specify "options.keyName" to use a different attribute as key.`,
+      `Key is not specified. Set a value for "${keyName}" or specify "options.keyName" to use a different attribute as key.`,
     )
   }
 
@@ -205,14 +239,14 @@ const updateRowIfExists = async (sheets, data, sheetHeaders, options) => {
   }
 
   const getRes = await spreadsheets.valuesGet(sheets, request)
-  if (!getRes.data.values) return
+  if (!getRes.values) return false
 
-  const index = getRes.data.values.findIndex((values) => {
-    const [value] = values
+  const index = getRes.values.findIndex((values) => {
+    const [value] = values as string[]
     return value === key
   })
 
-  if (index === -1) return
+  if (index === -1) return false
 
   const values = valueArray(data, sheetHeaders)
   const updateRequest = {
@@ -228,9 +262,4 @@ const updateRowIfExists = async (sheets, data, sheetHeaders, options) => {
   await spreadsheets.valuesUpdate(sheets, updateRequest)
 
   return true
-}
-
-module.exports = {
-  appendData,
-  setKeyValues,
 }

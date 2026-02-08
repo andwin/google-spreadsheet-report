@@ -1,4 +1,4 @@
-const valueArray = require('./value_array')
+import valueArray from './value_array'
 
 describe('valueArray', () => {
   it('returns array with values at expected positions', () => {

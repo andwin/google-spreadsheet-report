@@ -1,4 +1,4 @@
-const columnNumberToName = require('./column_number_to_name')
+import columnNumberToName from './column_number_to_name'
 
 describe('columnNumberToName', () => {
   it('converts column number to name', () => {

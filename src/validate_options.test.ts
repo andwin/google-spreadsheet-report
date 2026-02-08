@@ -1,4 +1,4 @@
-const validateOptions = require('./validate_options')
+import validateOptions from './validate_options'
 
 describe('validateOptions', () => {
   it('throws exception if email is missing', () => {
