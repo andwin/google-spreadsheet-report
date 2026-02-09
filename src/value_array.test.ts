@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import valueArray from './value_array'
 
 describe('valueArray', () => {
